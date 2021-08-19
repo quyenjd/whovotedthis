@@ -76,6 +76,12 @@
                     "^__pool_"
                 ]
             }
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+                "named": "never"
+            }
         ]
     },
     "settings": {
