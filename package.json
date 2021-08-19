@@ -1,0 +1,81 @@
+{
+    "name": "whovotedthis",
+    "author": "quyenjd",
+    "license": "UNLICENSED",
+    "description": "Simple anonymous voting system out of the box",
+    "version": "0.0.1-alpha",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/quyenjd/whovotedthis.git"
+    },
+    "keywords": [
+        "anonymous",
+        "voting"
+    ],
+    "scripts": {
+        "start": "react-scripts start",
+        "start:nolint": "cross-env DISABLE_ESLINT_PLUGIN=true npm run start",
+        "build:clean": "rimraf build",
+        "build:start": "react-scripts build",
+        "build": "npm-run-all -s build:clean build:start",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "lint": "eslint src/ --ext .ts --ext .tsx",
+        "lint:fix": "eslint src/ --ext .ts --ext .tsx --fix --quiet"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.12.3",
+        "@material-ui/icons": "^4.11.2",
+        "@testing-library/jest-dom": "^5.14.1",
+        "@testing-library/react": "^11.2.7",
+        "@testing-library/user-event": "^12.8.3",
+        "@types/jest": "^27.0.1",
+        "@types/lodash": "^4.14.172",
+        "@types/node": "^16.6.2",
+        "@types/react": "^17.0.19",
+        "@types/react-dom": "^17.0.9",
+        "@types/react-router-dom": "^5.1.8",
+        "dependency-graph": "^0.11.0",
+        "lodash": "^4.17.21",
+        "mobx": "^6.3.2",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "4.0.3",
+        "storage-manager-js": "^4.0.6",
+        "tslib": "^2.3.1",
+        "typescript": "^4.3.5"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^4.29.2",
+        "@typescript-eslint/parser": "^4.29.2",
+        "cross-env": "^7.0.3",
+        "eslint": "^7.32.0",
+        "eslint-config-standard": "^16.0.3",
+        "eslint-plugin-import": "^2.23.4",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^5.1.0",
+        "eslint-plugin-react": "^7.24.0",
+        "npm-run-all": "^4.1.5",
+        "rimraf": "^3.0.2"
+    }
+}
