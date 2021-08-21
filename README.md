@@ -1,17 +1,17 @@
-# whovotedthis - Simple Anonymous Voting System out of the box
+# whovotedthis - Simple Anonymous Voting System
 
-Simply `npm run build` and deploy it anywhere.
+Simply create a Qoom account, `npm run build`, upload it, and enjoy!
 
-Check it out live on [Qoom](https://icyfiremen86.qoom.space/~/whovotedthis).
+Check it out live [here](https://icyfiremen86.qoom.space/~/build).
 
 ## Features
 
 - Landing page
-- Login/logout user-based features
-- Anonymous poll voting, three separate mode: **Open**, **Voting**, and **Closed**
-- Poll and account management (administrator privilege)
-- Extra handy information
-- *Everything is made easy!*
+- Login/logout/signup user-based features
+- Poll voting, three separate mode: **Open**, **Voting**, and **Closed**
+- Anonymity
+- Responsive, thanks to Material UI
+- *Out of the box!*
 
 ## Motivation
 
