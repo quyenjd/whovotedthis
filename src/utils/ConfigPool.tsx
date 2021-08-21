@@ -29,7 +29,7 @@ type StateUpdateListener = {
  * A Pool's utility object that is dedicated to every component that is bound to
  * the Pool using `requireConsumable`.
  */
-export type Consumable = {
+export type Consumable<S = any> = {
     /**
      * Pause all changes from being pushed to the Pool.
      * @param noRender Whether to also pause changes from being committed to React states,
@@ -73,7 +73,7 @@ export type Consumable = {
      *
      * This supports mutating states without `setState`. Use as your own preference.
      */
-    state: Record<string, unknown>;
+    state: S;
 
     /**
      * Disconnect the component from the Pool.
@@ -223,7 +223,7 @@ namespace ConfigPool {
                                 node.consumer.pause(true);
                                 paused.add(consumerID);
 
-                                node.consumer.state[key] = val;
+                                (node.consumer.state as any)[key] = val;
                             }
                         });
                 }
@@ -300,9 +300,7 @@ namespace ConfigPool {
             if (locked[stringedKey]) delete locked[stringedKey];
             else {
                 throw new Error(
-                    `ConfigPool: [${key.join(
-                        '->'
-                    )}] has already been unlocked.`
+                    `ConfigPool: [${key.join('->')}] has already been unlocked.`
                 );
             }
         };
@@ -362,13 +360,13 @@ namespace ConfigPool {
      * or let the Pool decide.
      * @returns A Pool's controller dedicated to the React component.
      */
-    export const requireConsumable = function (
+    export const requireConsumable = function <S = any> (
         reactRef: React.Component | ConsumableListener,
         namespacedKey: string[],
         alternatingKeys: string[],
         defaultValues?: any[],
         enforceDefaultValues = false
-    ): Consumable {
+    ): Consumable<S> {
         alternatingKeys = [...new Set(alternatingKeys)];
 
         const reactMode = reactRef instanceof React.Component;
@@ -562,7 +560,7 @@ namespace ConfigPool {
 
                 consumables.removeNode(consumerID);
             }
-        } as Consumable;
+        } as Consumable<S>;
 
         // Bind Pool utilities to React instance
         if (reactMode) {

@@ -17,6 +17,7 @@ import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 import { Component, ReactElement } from 'react';
 import { Parallax } from 'react-parallax';
 import LinkUtil from '../utils/Link';
+import banner from '../banner.jpg';
 
 const MyContainer = withStyles({
     root: {
@@ -123,7 +124,7 @@ export default class Landing extends Component {
         return (
             <>
                 <Parallax
-                    bgImage="banner.jpg"
+                    bgImage={banner}
                     bgImageAlt="banner"
                     strength={300}
                 >
@@ -177,7 +178,7 @@ export default class Landing extends Component {
                             <Link href="https://peddiehacks.peddie.org/">
                                 PeddieHacks
                             </Link>{' '}
-                            hackathon, 2021. It has been implemented to meet all
+                            hackathon 2021. It has been implemented to meet all
                             the criteria listed below.
                         </Quote>
                         <Grid container spacing={3} justifyContent="center">
