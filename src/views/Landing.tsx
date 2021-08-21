@@ -49,7 +49,8 @@ const MyButton = withStyles((theme) => ({
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
         paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2)
+        paddingRight: theme.spacing(2),
+        fontSize: theme.typography.h6.fontSize
     }
 }))(Button);
 
@@ -123,11 +124,7 @@ export default class Landing extends Component {
     render() {
         return (
             <>
-                <Parallax
-                    bgImage={banner}
-                    bgImageAlt="banner"
-                    strength={300}
-                >
+                <Parallax bgImage={banner} bgImageAlt="banner" strength={300}>
                     <div
                         style={{
                             background: 'rgba(0, 0, 0, 0.5)',
@@ -159,9 +156,7 @@ export default class Landing extends Component {
                                 style={{ textDecoration: 'none' }}
                             >
                                 <MyButton variant="contained">
-                                    <Typography variant="h6">
-                                        Get Started
-                                    </Typography>
+                                    Get Started
                                 </MyButton>
                             </LinkUtil>
                         </MyContainer>

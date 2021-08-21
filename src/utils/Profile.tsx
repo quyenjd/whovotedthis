@@ -1,18 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
-import { isPlainObject } from 'lodash';
+import { isPlainObject, isString } from 'lodash';
 
 const UserOperations = [
     'logout', // Log out
-    'option:info', // How many options the user has added
     'password:change', // Change password
-    'poll:info', // Number of polls (in three stages)
     'poll:option:add', // Add option to poll
     'poll:option:edit', // Edit added option of poll
     'poll:option:remove', // Remove option from poll
     'poll:option:view', // View added option of poll
-    'poll:option:viewall', // View all added options of all users of poll
-    'poll:view', // View results of a poll
-    'poll:viewall', // Get list of all polls
     'poll:vote', // Vote an option of a poll
     'portal' // View the portal
 ] as const;
@@ -20,15 +15,14 @@ const UserOperations = [
 export type UserOperation = typeof UserOperations[number];
 
 const AdminOperations = [
+    ...UserOperations,
     'logout', // Log out
     'password:change', // Change password
     'poll:add', // Add a poll
-    'poll:info', // Number of polls (in three stages)
     'poll:remove', // Remove a poll
     'poll:stage:change', // Change stage of a poll
     'poll:update', // Update poll info
-    'poll:view', // View results of a poll
-    'poll:viewall', // Get list of all polls
+    'poll:viewinfo', // Get info of a poll
     'portal' // View the portal
 ] as const;
 
@@ -46,7 +40,7 @@ export default class Profile {
             ? axios
                 .post('/~/build/login', { username, password })
                 .then((response) => {
-                    this.checkErrorResponse(response);
+                    this.checkResponse(response);
                     Profile.loggedIn = response.data._id;
                     return axios.get('/~/build/account/profile');
                 })
@@ -68,7 +62,7 @@ export default class Profile {
         // Check if user has been logged in first
         return axios.get('/~/build/account/profile').then((response) => {
             try {
-                this.checkErrorResponse(response);
+                this.checkResponse(response);
                 Profile.loggedIn = response.data._id;
                 Profile.username = response.data.username;
                 Profile.type = response.data.profile.type;
@@ -82,7 +76,7 @@ export default class Profile {
     public static logout() {
         return this.require('logout')
             ? axios.post('/~/build/logout').then((response) => {
-                this.checkErrorResponse(response);
+                this.checkResponse(response);
                 this.clear();
             })
             : Promise.resolve().then(() => {
@@ -96,7 +90,7 @@ export default class Profile {
                 AdminOperations.indexOf(operation as AdminOperation) >= 0) ||
                 (Profile.type === 'user' &&
                     UserOperations.indexOf(operation as UserOperation) >= 0))
-            ? Profile.loggedIn
+            ? Profile.username
             : false;
     }
 
@@ -109,7 +103,7 @@ export default class Profile {
                     url: '/~/build/account/profile'
                 })
                 .then((response) => {
-                    this.checkErrorResponse(response);
+                    this.checkResponse(response);
                     this.password = newPassword;
                 })
             : Promise.resolve().then(() => {
@@ -125,7 +119,7 @@ export default class Profile {
         return axios
             .post('/~/build/signup', { username, password, type: 'user' })
             .then((response) => {
-                this.checkErrorResponse(response);
+                this.checkResponse(response);
                 return this.login(username, password);
             });
     }
@@ -136,8 +130,18 @@ export default class Profile {
         Profile.loggedIn = false;
     }
 
-    protected static checkErrorResponse(response: AxiosResponse<any>) {
-        if (!isPlainObject(response.data)) { throw new Error('Cannot parse the response from server'); }
-        if (Object.prototype.hasOwnProperty.call(response.data, 'error')) { throw new Error(response.data.error); }
+    protected static checkResponse(response: AxiosResponse<any>) {
+        if (Object.prototype.hasOwnProperty.call(response.data, 'error')) {
+            throw new Error(response.data.error);
+        }
+        if (
+            !isPlainObject(response.data) &&
+            isString(response.data._id) &&
+            isString(response.data.username) &&
+            isPlainObject(response.data.profile) &&
+            isString(response.data.profile.type)
+        ) {
+            throw new Error('Cannot parse the response from server');
+        }
     }
 }

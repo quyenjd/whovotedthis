@@ -3,7 +3,7 @@
     "author": "quyenjd",
     "license": "UNLICENSED",
     "description": "Simple anonymous voting system out of the box",
-    "version": "0.0.1-alpha",
+    "version": "0.0.1-rc.1",
     "private": true,
     "repository": {
         "type": "git",

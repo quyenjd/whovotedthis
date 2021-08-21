@@ -16,7 +16,8 @@ import {
     IconButton,
     Toolbar,
     DialogContentText,
-    TextField
+    TextField,
+    Divider
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
@@ -240,10 +241,18 @@ export default function TemporaryDrawer() {
                             open={Boolean(state.anchorEl)}
                             onClose={menuClose}
                         >
-                            <MenuItem onClick={passwordChange}>
-                                Change Password
-                            </MenuItem>
-                            <MenuItem onClick={logout}>Logout</MenuItem>
+                            <List disablePadding>
+                                <MenuItem disabled>
+                                    Logged in as: {Profile.require('portal')}
+                                </MenuItem>
+                            </List>
+                            <Divider light />
+                            <List style={{ paddingBottom: 0 }}>
+                                <MenuItem onClick={passwordChange}>
+                                    Change Password
+                                </MenuItem>
+                                <MenuItem onClick={logout}>Logout</MenuItem>
+                            </List>
                         </Menu>
                     </Toolbar>
                 </AppBar>
