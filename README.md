@@ -31,7 +31,7 @@ You can signup one by copying the code below and run it in your Qoom space.
 ```js
 const username = 'YOUR_USERNAME';
 const password = 'YOUR_PASSWORD';
-const type = 'admin'; // It can be 'admin' or 'user'
+const type = 'admin'; // for admin user or 'user' for normal user
 const data = { username, password, type };
 
 await fetch('/~/YOUR_PROJECT_NAME/signup', {
@@ -40,3 +40,5 @@ await fetch('/~/YOUR_PROJECT_NAME/signup', {
     body: JSON.stringify(data)
 });
 ```
+
+Also when building the project, make sure the `homepage` key in your `package.json` points correctly to your Qoom space.
