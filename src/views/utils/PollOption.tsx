@@ -22,6 +22,7 @@ import ConfigPool, { Consumable } from '../../utils/ConfigPool';
 
 let newValue = '';
 
+// Form element to handle `change` state of fields, for editing option values
 const Form = function ({
     originalValue,
     proceed
@@ -60,6 +61,9 @@ interface Props extends PollBodyElementProps {
     up: () => void;
 }
 
+/**
+ * Pool-enabled element to handle upvote button's appearance.
+ */
 class PollOptionUpvote extends Component<Pick<Props, 'up'>> {
     mobx: Consumable<{ voting: boolean }>;
 
@@ -84,7 +88,7 @@ class PollOptionUpvote extends Component<Pick<Props, 'up'>> {
         return !this.mobx.state.voting
             ? (
                 <ListItemSecondaryAction>
-                    <MyTooltip title="Upvote" arrow placement='top'>
+                    <MyTooltip title="Upvote" arrow placement="top">
                         <IconButton edge="end" onClick={() => this.props.up()}>
                             <ArrowUpwardIcon />
                         </IconButton>
@@ -101,6 +105,9 @@ interface State {
     anchorEl: HTMLElement | null;
 }
 
+/**
+ * Interface element for each poll option.
+ */
 export default class PollOption extends Component<Props, State> {
     constructor(props: Props) {
         super(props);

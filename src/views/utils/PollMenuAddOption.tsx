@@ -3,6 +3,9 @@ import { MenuItem } from '@material-ui/core';
 import PollBodyElementProps from './PollBodyElementProps';
 import { runSnackbar } from '../../utils/Snackbar';
 
+/**
+ * Interface element for `Poll.addOption`.
+ */
 export default class PollMenuAddOption extends Component<
     PollBodyElementProps & { close: () => void }
 > {

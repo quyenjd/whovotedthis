@@ -93,12 +93,15 @@ const MyCardContent = withStyles({
     }
 })(CardContent);
 
-export interface Criterion {
+interface Criterion {
     icon: ReactElement;
     title: string;
     content: string;
 }
 
+/**
+ * It is the element for the landing page, APPARENTLY.
+ */
 export default class Landing extends Component {
     criteria: Criterion[] = [
         {

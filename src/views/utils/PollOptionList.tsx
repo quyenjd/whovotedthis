@@ -24,12 +24,19 @@ const MyContainer = withStyles((theme) => ({
     }
 }))(Container);
 
+/**
+ * Interface element for a list of poll options.
+ *
+ * It acts as a wrapper to map PollOption elements and handle upvoting.
+ */
 export default class PollOptionList extends Component<PollBodyElementProps> {
     render() {
         if (
             this.props.stage !== 'closed' &&
             !Profile.require('poll:option:view')
-        ) { return <></>; }
+        ) {
+            return <></>;
+        }
 
         const canVote = Profile.require('poll:vote');
 

@@ -28,6 +28,7 @@ interface TitleProps {
     voted: boolean;
 }
 
+// Accordion title element
 class PortalPollListItemTitle extends Component<TitleProps> {
     render() {
         const canVote = Profile.require('poll:vote');
@@ -57,6 +58,7 @@ class PortalPollListItemTitle extends Component<TitleProps> {
     }
 }
 
+// Accordion body element
 class PortalPollListItemBody extends Component<PollBodyElementProps> {
     render() {
         return (
@@ -78,6 +80,9 @@ interface State {
     loaded: boolean;
 }
 
+/**
+ * Interface element for a poll, which is an accordion list item.
+ */
 export default class PortalPollListItem extends Component<Props, State> {
     options: PollOption[];
     stage: PollStage;

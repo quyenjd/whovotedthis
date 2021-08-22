@@ -19,6 +19,9 @@ interface PollObject {
     [id: string]: Poll;
 }
 
+/**
+ * All operations related to Poll.
+ */
 export default class Poll {
     private static loaded: PollObject = {};
     private static _id = '';
@@ -27,10 +30,20 @@ export default class Poll {
     private static optionIdCounter = 0;
     private static axios: Promise<void> = Promise.resolve();
 
+    /**
+     * Wait until `loadPolls` (if called) finishes.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static afterLoaded() {
         return this.axios;
     }
 
+    /**
+     * Load all polls from the database.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static loadPolls() {
         const _ = (response: AxiosResponse<any>) => {
             this.checkResponse(response);
@@ -76,6 +89,11 @@ export default class Poll {
         });
     }
 
+    /**
+     * Add new poll to the database.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static addPoll() {
         return Profile.require('poll:add')
             ? this.axios.then(() => {
@@ -88,10 +106,22 @@ export default class Poll {
             : Promise.resolve('');
     }
 
+    /**
+     * Get all loaded polls.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static getPolls() {
         return this.axios.then(() => Object.keys(this.loaded));
     }
 
+    /**
+     * Get the instance of a poll.
+     *
+     * @param id Id of the poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static getPoll(id: string) {
         return this.axios.then(() =>
             Object.prototype.hasOwnProperty.call(this.loaded, id)
@@ -100,13 +130,25 @@ export default class Poll {
         );
     }
 
+    /**
+     * Remove a poll from the database.
+     *
+     * @param id Id of the poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static removePoll(id: string) {
         return this.getPoll(id).then((poll) =>
             poll ? poll.remove() : Promise.resolve()
         );
     }
 
-    public static save() {
+    /**
+     * Push information of all polls to the database.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
+    private static save() {
         let success: string | null;
 
         return axios
@@ -170,6 +212,13 @@ export default class Poll {
     private _version = 0;
     private axios: Promise<void> = Promise.resolve();
 
+    /**
+     * Initialize a poll instance.
+     *
+     * This is made private as I enforce the use of the static method `getPoll`.
+     *
+     * @param id Id of the poll.
+     */
     private constructor(id: string) {
         this.pollId = id;
 
@@ -217,21 +266,38 @@ export default class Poll {
             });
     }
 
+    /**
+     * Wait until the constructor finishes.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public afterLoaded() {
         return this.axios;
     }
 
+    /**
+     * Get limit of the current poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public getLimit() {
         return this.axios.then(() => {
             return this.limit;
         });
     }
 
+    /**
+     * Set limit of the current poll.
+     *
+     * @param newLimit New limit (0 means the limit is removed).
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public setLimit(newLimit: number) {
         return Profile.require('poll:limit')
             ? this.axios.then(() => {
                 if (this.stage === 'open') {
-                    this.limit = newLimit;
+                    this.limit = Math.max(0, newLimit);
                     return this.save();
                 } else {
                     throw new Error(
@@ -242,12 +308,24 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Get title of the current poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public getTitle() {
         return this.axios.then(() => {
             return this.title;
         });
     }
 
+    /**
+     * Update title of the current poll.
+     *
+     * @param newTitle New title (if empty, fall back to using `New Poll`)
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public updateTitle(newTitle: string) {
         return Profile.require('poll:update')
             ? this.axios.then(() => {
@@ -263,12 +341,24 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Get stage of the current poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public getStage() {
         return this.axios.then(() => {
             return this.stage;
         });
     }
 
+    /**
+     * Update stage of the current poll.
+     *
+     * @param newStage New stage.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public updateStage(newStage: PollStage) {
         return Profile.require('poll:stage:change')
             ? this.axios.then(() => {
@@ -307,6 +397,13 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Add a new option to the current poll.
+     *
+     * @param value Initiating value of the option.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public addOption(value = '') {
         const username = Profile.require('poll:option:add');
         return username
@@ -345,6 +442,11 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Get all options of the current poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public getOptions() {
         const username =
             Profile.require('poll:option:view') ||
@@ -369,6 +471,11 @@ export default class Poll {
             : Promise.resolve([] as PollOption[]);
     }
 
+    /**
+     * Get info string of the current poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public getInfo() {
         return (
             Profile.require('poll:viewinfo')
@@ -408,6 +515,14 @@ export default class Poll {
         );
     }
 
+    /**
+     * Update value of an option of the current poll.
+     *
+     * @param id Id of the option.
+     * @param newValue New value (if empty, fall back to using the old value).
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public updateOption(id: string, newValue: string) {
         const username = Profile.require('poll:option:edit');
         return username
@@ -430,6 +545,13 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Remove an option from the current poll.
+     *
+     * @param id Id of the option.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public removeOption(id: string) {
         const username = Profile.require('poll:option:remove');
         return username
@@ -449,6 +571,13 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Vote an option of the current poll.
+     *
+     * @param rates An object of option ids and new rates.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public voteOptions(rates: { [id: string]: number }) {
         const username = Profile.require('poll:vote');
         return username
@@ -478,6 +607,11 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Remove the current poll.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public remove() {
         return Profile.require('poll:remove')
             ? this.axios.then(() => {
@@ -501,6 +635,11 @@ export default class Poll {
             : Promise.resolve();
     }
 
+    /**
+     * Push information of the current poll to the database.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     private save() {
         let success: string | null;
 
@@ -557,6 +696,11 @@ export default class Poll {
             });
     }
 
+    /**
+     * Check validity of the response and throw `Error` where necessary.
+     *
+     * @param response Response object from axios.
+     */
     private static checkResponse(response: AxiosResponse<any>) {
         if (Object.prototype.hasOwnProperty.call(response.data, 'error')) {
             throw new Error(response.data.error);

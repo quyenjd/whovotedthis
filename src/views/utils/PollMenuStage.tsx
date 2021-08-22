@@ -4,6 +4,9 @@ import PollBodyElementProps from './PollBodyElementProps';
 import { runSnackbar } from '../../utils/Snackbar';
 import { runDialog } from '../../utils/Dialog';
 
+/**
+ * Interface element for `Poll.updateStage`.
+ */
 export default class PollMenuStage extends Component<
     PollBodyElementProps & { close: () => void }
 > {

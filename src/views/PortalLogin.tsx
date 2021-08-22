@@ -57,6 +57,7 @@ interface States {
     disabled: boolean;
 }
 
+// Login page element
 class PortalLogin extends Component<WithStyles<typeof styles>, States> {
     constructor(props: WithStyles<typeof styles>) {
         super(props);
@@ -291,6 +292,11 @@ class PortalLogin extends Component<WithStyles<typeof styles>, States> {
     }
 }
 
+/**
+ * Interface element for logging in/signing up.
+ *
+ * It will show if the user has not yet logged in, and render `Portal` otherwise.
+ */
 export default withStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),

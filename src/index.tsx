@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import axios from 'axios';
 
+// Content-Type header for all axios requests
 axios.defaults.headers = {
     'Content-Type': 'application/json'
 };

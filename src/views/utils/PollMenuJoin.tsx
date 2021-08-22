@@ -4,6 +4,14 @@ import PollBodyElementProps from './PollBodyElementProps';
 import { runDialog } from '../../utils/Dialog';
 import { runSnackbar } from '../../utils/Snackbar';
 
+/**
+ * Interface element for joining the poll.
+ *
+ * By joining, I mean call `Poll.voteOptions` and pass random rates to all options before
+ * letting users upvote/downvote them.
+ *
+ * This is to make sure once a user joins a poll, he/she has a vote in all options.
+ */
 export default class PollMenuJoin extends Component<
     PollBodyElementProps & { close: () => void }
 > {

@@ -50,7 +50,11 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function TemporaryDrawer() {
+/**
+ * Basic layout elements of the Portal, including left drawer, top navigation bar,
+ * profile icon, and handlers of Change Password and Logout menu items.
+ */
+export default function Portal() {
     const classes = useStyles();
     const [state, setState] = React.useState<{
         anchorEl: null | HTMLElement;
@@ -62,6 +66,7 @@ export default function TemporaryDrawer() {
         password: ''
     });
 
+    // Toggle drawer open/closed
     const toggleDrawer =
         (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
             if (
@@ -75,6 +80,7 @@ export default function TemporaryDrawer() {
             setState({ ...state, open });
         };
 
+    // Generate the list for drawer
     const list = () => (
         <div
             className={clsx(classes.list, {
@@ -110,6 +116,7 @@ export default function TemporaryDrawer() {
         </div>
     );
 
+    // Set anchorEl to open the menu
     const menuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
         setState({
             ...state,
@@ -117,6 +124,7 @@ export default function TemporaryDrawer() {
         });
     };
 
+    // Unset anchorEl to close the menu
     const menuClose = () => {
         setState({
             ...state,
@@ -124,6 +132,7 @@ export default function TemporaryDrawer() {
         });
     };
 
+    // Submit password change request
     const passwordChangeSubmit = (password: string) => {
         runSnackbar(true, 'Updating your password...', 0);
         Profile.changePassword(password).then(
@@ -142,6 +151,7 @@ export default function TemporaryDrawer() {
         );
     };
 
+    // Handle password change menu click event
     const passwordChange = () => {
         let inputPassword = '';
 
@@ -189,6 +199,7 @@ export default function TemporaryDrawer() {
         menuClose();
     };
 
+    // Handle logout menu click event
     const logout = () => {
         runDialog({
             open: true,

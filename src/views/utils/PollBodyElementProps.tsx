@@ -1,5 +1,8 @@
 import Poll, { PollOption, PollStage } from '../../utils/Poll';
 
+/**
+ * Props of all child elements of poll body.
+ */
 interface PollBodyElementProps {
     poll: Poll;
     stage: PollStage;

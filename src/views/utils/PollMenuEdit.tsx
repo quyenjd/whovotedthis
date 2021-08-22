@@ -6,6 +6,7 @@ import { runSnackbar } from '../../utils/Snackbar';
 
 let newTitle = '';
 
+// Form element to handle `change` state of fields
 const Form = function ({
     originalTitle,
     proceed
@@ -38,6 +39,9 @@ const Form = function ({
     );
 };
 
+/**
+ * Interface element for `Poll.updateTitle`.
+ */
 export default class PollMenuEdit extends Component<
     PollBodyElementProps & { close: () => void }
 > {

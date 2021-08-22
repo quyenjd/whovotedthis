@@ -22,6 +22,10 @@ interface State {
     anchorEl: HTMLElement | null;
 }
 
+/**
+ * An element that renders as the Operations button in the poll body.
+ * It also handles operations of its items.
+ */
 export default class PollMenu extends Component<PollBodyElementProps, State> {
     constructor(props: PollBodyElementProps) {
         super(props);

@@ -18,6 +18,11 @@ interface State {
     title: string;
 }
 
+/**
+ * Set the state of the global dialog element.
+ *
+ * @param state State to be passed to the dialog.
+ */
 export function runDialog(state: Partial<State>) {
     ConfigPool.set(['Dialog', 'state'], {
         ...ConfigPool.get(['Dialog', 'state']),
@@ -25,6 +30,9 @@ export function runDialog(state: Partial<State>) {
     });
 }
 
+/**
+ * Global Pool-enabled dialog element.
+ */
 export default class Dialog extends Component<
     Record<never, never>,
     { state: State }

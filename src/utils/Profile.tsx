@@ -28,6 +28,9 @@ const AdminOperations = [
 
 export type AdminOperation = typeof AdminOperations[number];
 
+/**
+ * All operations related to Profile.
+ */
 export default class Profile {
     protected static username = '';
     protected static password = '';
@@ -35,6 +38,14 @@ export default class Profile {
 
     private static loggedIn: string | false = false;
 
+    /**
+     * Initiate a login.
+     *
+     * @param username Email or username.
+     * @param password Password.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static login(username: string, password: string) {
         return username.length && password.length
             ? axios
@@ -58,6 +69,11 @@ export default class Profile {
             });
     }
 
+    /**
+     * Redo a login using currently stored information.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static reLogin() {
         // Check if user has been logged in first
         return axios.get('/~/build/account/profile').then((response) => {
@@ -73,6 +89,11 @@ export default class Profile {
         });
     }
 
+    /**
+     * Initiate a logout.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static logout() {
         return this.require('logout')
             ? axios.post('/~/build/logout').then((response) => {
@@ -84,6 +105,13 @@ export default class Profile {
             });
     }
 
+    /**
+     * Check if the user is admitted to do an operation.
+     *
+     * @param operation Name of the operation.
+     *
+     * @returns The current user's username or false if not admitted.
+     */
     public static require(operation: UserOperation | AdminOperation) {
         return Profile.loggedIn !== false &&
             ((Profile.type === 'admin' &&
@@ -94,6 +122,13 @@ export default class Profile {
             : false;
     }
 
+    /**
+     * Change password of the current user.
+     *
+     * @param newPassword New password.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static changePassword(newPassword: string) {
         return this.require('password:change') && newPassword.length
             ? axios
@@ -115,6 +150,14 @@ export default class Profile {
             });
     }
 
+    /**
+     * Create a new user/voter.
+     *
+     * @param username New email or username.
+     * @param password Password.
+     *
+     * @returns A Promise that resolves when the operation is done.
+     */
     public static signup(username: string, password: string) {
         return axios
             .post('/~/build/signup', { username, password, type: 'user' })
@@ -124,12 +167,20 @@ export default class Profile {
             });
     }
 
+    /**
+     * Clear information of the current user.
+     */
     private static clear() {
         Profile.username = Profile.password = '';
         Profile.type = null;
         Profile.loggedIn = false;
     }
 
+    /**
+     * Check validity of the response and throw `Error` where necessary.
+     *
+     * @param response Response object from axios.
+     */
     protected static checkResponse(response: AxiosResponse<any>) {
         if (Object.prototype.hasOwnProperty.call(response.data, 'error')) {
             throw new Error(response.data.error);

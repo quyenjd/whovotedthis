@@ -42,6 +42,11 @@ interface State {
     polls: string[];
 }
 
+/**
+ * Interface element for everything about polls.
+ *
+ * It acts as a wrapper for `PortalPollList`, as well as handles filtering and poll creating.
+ */
 export default class PortalPolls extends Component<
     Record<never, never>,
     State

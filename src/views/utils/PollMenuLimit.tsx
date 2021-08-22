@@ -3,8 +3,8 @@ import {
     FormControlLabel,
     FormGroup,
     MenuItem,
-    TextField
-    , Checkbox
+    TextField,
+    Checkbox
 } from '@material-ui/core';
 import PollBodyElementProps from './PollBodyElementProps';
 import { runDialog } from '../../utils/Dialog';
@@ -12,6 +12,7 @@ import { runSnackbar } from '../../utils/Snackbar';
 
 let newLimit = 0;
 
+// Form element to handle `change` state of fields
 const Form = function ({ originalLimit }: { originalLimit: number }) {
     const [limitMode, setLimitMode] = useState(originalLimit > 0);
     const [limit, setLimit] = useState(originalLimit);
@@ -50,7 +51,10 @@ const Form = function ({ originalLimit }: { originalLimit: number }) {
     );
 };
 
-export default class PollMenuEdit extends Component<
+/**
+ * Interface element for `Poll.setLimit`.
+ */
+export default class PollMenuLimit extends Component<
     PollBodyElementProps & { close: () => void }
 > {
     render() {

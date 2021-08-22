@@ -14,6 +14,11 @@ interface State {
     polls: Poll[];
 }
 
+/**
+ * Accordion list to show all polls.
+ *
+ * It acts as a wrapper to map `PortalPollListItem` elements.
+ */
 export default class PortalPollList extends Component<Props, State> {
     constructor(props: Props) {
         super(props);

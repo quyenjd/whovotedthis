@@ -4,6 +4,9 @@ import PollBodyElementProps from './PollBodyElementProps';
 import { runDialog } from '../../utils/Dialog';
 import { runSnackbar } from '../../utils/Snackbar';
 
+/**
+ * Interface element for `Poll.remove`.
+ */
 export default class PollMenuRemove extends Component<
     PollBodyElementProps & { close: () => void }
 > {

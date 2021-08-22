@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+// Generate project.json file for uploading to Qoom
 fs.appendFile(
     'build/project.json',
     '{\n    "homepage": "index.html"\n}',

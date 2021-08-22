@@ -20,4 +20,4 @@ This project is used as a demonstration in the [PeddieHacks](https://peddiehacks
 
 ## What I use
 
-React (bootstrapped with Create React App), Material UI, and other awesome libraries.
+React (bootstrapped with Create React App), Material UI, and other awesome libraries, including my utility [ConfigPool][src/utils/ConfigPool.tsx], which is a wrapper of MobX that internally binds to React class components.

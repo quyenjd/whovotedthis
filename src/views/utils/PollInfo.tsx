@@ -6,6 +6,9 @@ interface State {
     loaded: boolean;
 }
 
+/**
+ * An element to show `Poll.getInfo` in the poll body.
+ */
 export default class PollInfo extends Component<PollBodyElementProps, State> {
     info: string;
 
