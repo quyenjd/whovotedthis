@@ -26,9 +26,9 @@ import PollIcon from '@material-ui/icons/Poll';
 import Link from '../utils/Link';
 import PortalPolls from './PortalPolls';
 import { runDialog } from '../utils/Dialog';
-
 import Profile from '../utils/Profile';
 import { runSnackbar } from '../utils/Snackbar';
+import { version } from '../../package.json';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -101,6 +101,10 @@ export default function TemporaryDrawer() {
                         <PollIcon />
                     </ListItemIcon>
                     <ListItemText primary="Polls" />
+                </ListItem>
+                <Divider />
+                <ListItem disabled>
+                    <ListItemText secondary={`whovotedthis v${version}`} />
                 </ListItem>
             </List>
         </div>
@@ -248,10 +252,22 @@ export default function TemporaryDrawer() {
                             </List>
                             <Divider light />
                             <List style={{ paddingBottom: 0 }}>
-                                <MenuItem onClick={passwordChange}>
-                                    Change Password
-                                </MenuItem>
-                                <MenuItem onClick={logout}>Logout</MenuItem>
+                                {Profile.require('password:change')
+                                    ? (
+                                        <MenuItem onClick={passwordChange}>
+                                        Change Password
+                                        </MenuItem>
+                                    )
+                                    : (
+                                        <></>
+                                    )}
+                                {Profile.require('logout')
+                                    ? (
+                                        <MenuItem onClick={logout}>Logout</MenuItem>
+                                    )
+                                    : (
+                                        <></>
+                                    )}
                             </List>
                         </Menu>
                     </Toolbar>

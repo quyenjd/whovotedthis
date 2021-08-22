@@ -12,6 +12,7 @@ import { Component } from 'react';
 import { runSnackbar } from '../utils/Snackbar';
 import Poll, { PollFilter } from '../utils/Poll';
 import PortalPollList from './PortalPollList';
+import Profile from '../utils/Profile';
 
 const MyFormControl = withStyles((theme) => ({
     root: {
@@ -106,16 +107,22 @@ export default class PortalPolls extends Component<
                             <MenuItem value="closed">Closed</MenuItem>
                         </MySelect>
                     </FormControl>
-                    <div style={{ flexGrow: 1, textAlign: 'right' }}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => this.createPoll()}
-                            disabled={this.state.pollButtonDisabled}
-                        >
-                            {this.state.pollButtonContent}
-                        </Button>
-                    </div>
+                    {Profile.require('poll:add')
+                        ? (
+                            <div style={{ flexGrow: 1, textAlign: 'right' }}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => this.createPoll()}
+                                    disabled={this.state.pollButtonDisabled}
+                                >
+                                    {this.state.pollButtonContent}
+                                </Button>
+                            </div>
+                        )
+                        : (
+                            <></>
+                        )}
                 </MyContainer>
                 <Divider />
                 <MyContainer>

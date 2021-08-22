@@ -9,8 +9,8 @@ import {
     IconButton,
     Menu,
     MenuItem,
-    TextField
-    , Tooltip
+    TextField,
+    Tooltip
 } from '@material-ui/core';
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import MoreVertIcon from '@material-ui/icons/MoreVert';

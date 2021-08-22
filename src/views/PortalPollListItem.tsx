@@ -30,8 +30,6 @@ interface TitleProps {
 
 class PortalPollListItemTitle extends Component<TitleProps> {
     render() {
-        const canVote = Profile.require('poll:vote');
-
         return (
             <Typography variant="body1">
                 <MyChip
@@ -49,7 +47,7 @@ class PortalPollListItemTitle extends Component<TitleProps> {
                     }
                 />
                 {this.props.title}
-                {canVote
+                {this.props.stage !== 'open'
                     ? ' ' + (this.props.voted ? '(joined)' : '(not joined)')
                     : ''}
             </Typography>
@@ -137,8 +135,7 @@ export default class PortalPollListItem extends Component<Props, State> {
     }
 
     render() {
-        const canVote =
-            this.stage !== 'open' ? Profile.require('poll:vote') : false;
+        const canVote = Profile.require('poll:vote');
 
         const hasVoted = (() => {
             if (!this.options) return false;
@@ -149,7 +146,9 @@ export default class PortalPollListItem extends Component<Props, State> {
                     canVote &&
                     option.user !== canVote &&
                     !Object.prototype.hasOwnProperty.call(option.votes, canVote)
-                ) { voted = false; }
+                ) {
+                    voted = false;
+                }
             });
             return voted;
         })();

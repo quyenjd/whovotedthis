@@ -9,7 +9,8 @@ Check it out live [here](https://icyfiremen86.qoom.space/~/build).
 - Landing page
 - Login/logout/signup user-based features
 - Poll voting, three separate mode: **Open**, **Voting**, and **Closed**
-- Anonymity
+- Poll option limiting
+- **Anonymity**
 - Responsive, thanks to Material UI
 - *Out of the box!*
 

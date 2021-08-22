@@ -11,13 +11,13 @@ import {
     createStyles,
     Theme,
     withStyles,
-    WithStyles,
-    Snackbar
+    WithStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Profile from '../utils/Profile';
 import Portal from './Portal';
 import { runSnackbar } from '../utils/Snackbar';
+import LoadingOverlay from 'react-loading-overlay';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -149,121 +149,145 @@ class PortalLogin extends Component<WithStyles<typeof styles>, States> {
     render() {
         const classes = this.props.classes;
 
-        return this.state.ready
-            ? (
-                <>
-                    {this.state.loggedin
-                        ? (
-                            <Portal />
-                        )
-                        : (
-                            <Container component="main" maxWidth="xs">
-                                <CssBaseline />
-                                <div className={classes.paper}>
-                                    <Avatar className={classes.avatar}>
-                                        <LockOutlinedIcon />
-                                    </Avatar>
-                                    <Typography component="h1" variant="h5">
-                                Log In
-                                    </Typography>
-                                    <form
-                                        className={classes.form}
-                                        onSubmit={(event) => {
-                                            event.preventDefault();
-                                            this.handleLogin();
-                                        }}
-                                    >
-                                        <TextField
-                                            variant="outlined"
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            id="username"
-                                            label="Username"
-                                            autoComplete="username"
-                                            autoFocus
-                                            value={this.state.username}
-                                            onChange={(event) => {
-                                                this.setState({
-                                                    username: event.target.value
-                                                });
-                                            }}
-                                        />
-                                        <TextField
-                                            variant="outlined"
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            label="Password"
-                                            type="password"
-                                            id="password"
-                                            autoComplete="current-password"
-                                            value={this.state.password}
-                                            onChange={(event) => {
-                                                this.setState({
-                                                    password: event.target.value
-                                                });
-                                            }}
-                                        />
-                                        {this.state.error
-                                            ? (
-                                                <MyTypography
-                                                    variant="subtitle2"
-                                                    color="error"
-                                                >
-                                                    {this.state.error}
-                                                </MyTypography>
-                                            )
-                                            : undefined}
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            disabled={this.state.disabled}
-                                            variant="contained"
-                                            color="primary"
-                                            className={classes.submit}
-                                        >
-                                            {this.state.login}
-                                        </Button>
-                                        <Button
-                                            fullWidth
-                                            variant="contained"
-                                            color="secondary"
-                                            className={classes.submit}
-                                            disabled={this.state.disabled}
-                                            style={{ marginTop: 0 }}
-                                            onClick={(event) => {
+        return (
+            <>
+                {this.state.ready
+                    ? (
+                        this.state.loggedin
+                            ? (
+                                <Portal />
+                            )
+                            : (
+                                <Container component="main" maxWidth="xs">
+                                    <CssBaseline />
+                                    <div className={classes.paper}>
+                                        <Avatar className={classes.avatar}>
+                                            <LockOutlinedIcon />
+                                        </Avatar>
+                                        <Typography component="h1" variant="h5">
+                                    Log In
+                                        </Typography>
+                                        <form
+                                            className={classes.form}
+                                            onSubmit={(event) => {
                                                 event.preventDefault();
-                                                this.handleSignup();
+                                                this.handleLogin();
                                             }}
                                         >
-                                            {this.state.signup}
-                                        </Button>
-                                    </form>
-                                </div>
-                                <Box mt={4}>
-                                    <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                        align="center"
-                                    >
-                                        {'whovotedthis @ '}
-                                        <Link
-                                            color="inherit"
-                                            href="https://peddiehacks.peddie.org/"
+                                            <TextField
+                                                variant="outlined"
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                id="username"
+                                                label="Username"
+                                                autoComplete="username"
+                                                autoFocus
+                                                value={this.state.username}
+                                                onChange={(event) => {
+                                                    this.setState({
+                                                        username: event.target.value
+                                                    });
+                                                }}
+                                            />
+                                            <TextField
+                                                variant="outlined"
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                label="Password"
+                                                type="password"
+                                                id="password"
+                                                autoComplete="current-password"
+                                                value={this.state.password}
+                                                onChange={(event) => {
+                                                    this.setState({
+                                                        password: event.target.value
+                                                    });
+                                                }}
+                                            />
+                                            {this.state.error
+                                                ? (
+                                                    <MyTypography
+                                                        variant="subtitle2"
+                                                        color="error"
+                                                    >
+                                                        {this.state.error}
+                                                    </MyTypography>
+                                                )
+                                                : undefined}
+                                            <Button
+                                                type="submit"
+                                                fullWidth
+                                                disabled={this.state.disabled}
+                                                variant="contained"
+                                                color="primary"
+                                                className={classes.submit}
+                                            >
+                                                {this.state.login}
+                                            </Button>
+                                            <Button
+                                                fullWidth
+                                                variant="contained"
+                                                color="secondary"
+                                                className={classes.submit}
+                                                disabled={this.state.disabled}
+                                                style={{ marginTop: 0 }}
+                                                onClick={(event) => {
+                                                    event.preventDefault();
+                                                    this.handleSignup();
+                                                }}
+                                            >
+                                                {this.state.signup}
+                                            </Button>
+                                        </form>
+                                    </div>
+                                    <Box mt={4}>
+                                        <Typography
+                                            variant="body2"
+                                            color="textSecondary"
+                                            align="center"
                                         >
-                                    PeddieHacks
-                                        </Link>{' '}
-                                        {'2021.'}
-                                    </Typography>
-                                </Box>
-                            </Container>
-                        )}
-                </>
-            )
-            : (
-                'Verifying your credentials...'
-            );
+                                            {'whovotedthis @ '}
+                                            <Link
+                                                color="inherit"
+                                                href="https://peddiehacks.peddie.org/"
+                                            >
+                                        PeddieHacks
+                                            </Link>{' '}
+                                            {'2021.'}
+                                        </Typography>
+                                    </Box>
+                                </Container>
+                            )
+                    )
+                    : (
+                        <></>
+                    )}
+                <LoadingOverlay
+                    active={!this.state.ready}
+                    fadeSpeed={300}
+                    spinner
+                    text={
+                        <Typography variant="body1">
+                            Verifying your credentials...
+                        </Typography>
+                    }
+                    styles={{
+                        wrapper: (base) => ({
+                            ...base,
+                            position: 'fixed',
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: 0,
+                            zIndex: 999999, // ridiculous value
+                            pointerEvents: 'none'
+                        })
+                    }}
+                />
+            </>
+        );
     }
 }
 

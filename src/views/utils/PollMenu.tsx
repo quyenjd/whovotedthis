@@ -7,10 +7,11 @@ import PollMenuRemove from './PollMenuRemove';
 import PollMenuAddOption from './PollMenuAddOption';
 import PollMenuStage from './PollMenuStage';
 import PollMenuJoin from './PollMenuJoin';
+import PollMenuLimit from './PollMenuLimit';
 
 const MyContainer = withStyles((theme) => ({
     root: {
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(2),
         display: 'block',
         width: '100%',
         textAlign: 'center'
@@ -44,6 +45,14 @@ export default class PollMenu extends Component<PollBodyElementProps, State> {
             !this.props.voted
                 ? (
                     <PollMenuJoin {...this.props} close={close} />
+                )
+                : undefined;
+
+        // Limit option
+        const limitOption =
+            this.props.stage === 'open' && Profile.require('poll:limit')
+                ? (
+                    <PollMenuLimit {...this.props} close={close} />
                 )
                 : undefined;
 
@@ -81,7 +90,12 @@ export default class PollMenu extends Component<PollBodyElementProps, State> {
                 )
                 : undefined;
 
-        return pollJoin || addOption || pollEdit || pollRemove || pollStage
+        return pollJoin ||
+            limitOption ||
+            addOption ||
+            pollEdit ||
+            pollRemove ||
+            pollStage
             ? (
                 <MyContainer disableGutters>
                     <Button
@@ -105,6 +119,7 @@ export default class PollMenu extends Component<PollBodyElementProps, State> {
                         }}
                     >
                         {pollJoin}
+                        {limitOption}
                         {addOption}
                         {pollEdit}
                         {pollRemove}

@@ -15,10 +15,10 @@ const UserOperations = [
 export type UserOperation = typeof UserOperations[number];
 
 const AdminOperations = [
-    ...UserOperations,
     'logout', // Log out
     'password:change', // Change password
     'poll:add', // Add a poll
+    'poll:limit', // Limit number of options per user
     'poll:remove', // Remove a poll
     'poll:stage:change', // Change stage of a poll
     'poll:update', // Update poll info

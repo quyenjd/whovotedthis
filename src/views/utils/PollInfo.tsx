@@ -35,7 +35,11 @@ export default class PollInfo extends Component<PollBodyElementProps, State> {
     render() {
         if (!this.state.loaded || !this.info.length) return <></>;
         return (
-            <Typography variant="body2" gutterBottom>
+            <Typography
+                variant="body2"
+                gutterBottom
+                style={{ whiteSpace: 'pre-wrap' }}
+            >
                 {this.info}
             </Typography>
         );

@@ -21,9 +21,9 @@ export default class PollMenuStage extends Component<
                         title: content,
                         content: (
                             <DialogContentText>
-                                Are you sure you want to change the poll&#39;s
-                                stage? Note that you cannot switch back to the
-                                previous stage once new stage is marked.
+                                Are you sure you want to change the poll stage?
+                                Note that you cannot switch back to the previous
+                                stage once new stage is marked.
                             </DialogContentText>
                         ),
                         onProceed: () => {
@@ -41,7 +41,7 @@ export default class PollMenuStage extends Component<
                                         });
                                         runSnackbar(
                                             true,
-                                            "Poll's stage has been updated."
+                                            'Poll stage has been updated.'
                                         );
                                         this.props.itemRefresher();
                                     },

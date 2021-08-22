@@ -8,6 +8,7 @@ import {
     ListSubheader,
     Paper,
     withStyles
+    , Divider
 } from '@material-ui/core';
 import Profile from '../../utils/Profile';
 import { PollOption as Option } from '../../utils/Poll';
@@ -42,6 +43,42 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
                     : indexes;
         };
 
+        const listItems = getSorted(this.props.options).map(
+            (value, index, arr) => (
+                <PollOption
+                    {...this.props}
+                    key={index}
+                    index={value}
+                    up={
+                        index
+                            ? () => {
+                                const previousValue = arr[index - 1];
+                                runSnackbar(true, 'Updating your vote...', 0);
+                                this.props.poll
+                                    .voteOptions({
+                                        [this.props.options[previousValue]
+                                            .id]: index + 1,
+                                        [this.props.options[value].id]: index
+                                    })
+                                    .then(
+                                        () => {
+                                            runSnackbar(
+                                                true,
+                                                'Your vote has been updated.'
+                                            );
+                                            this.props.itemRefresher();
+                                        },
+                                        (error) => {
+                                            runSnackbar(true, error.message);
+                                        }
+                                    );
+                            }
+                            : () => {}
+                    }
+                />
+            )
+        );
+
         return (
             <MyContainer disableGutters>
                 <Paper variant="outlined">
@@ -50,68 +87,25 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
                             {this.props.stage === 'open'
                                 ? 'My options'
                                 : this.props.stage === 'voting'
-                                    ? 'All options (exluding yours)'
+                                    ? 'All options (exluding yours, sorted by preference)'
                                     : 'Results'}
                         </ListSubheader>
-                        {this.props.stage === 'closed' || this.props.voted
+                        <Divider />
+                        {this.props.stage === 'voting' && !this.props.voted
                             ? (
-                                getSorted(this.props.options).map(
-                                    (value, index, arr) => (
-                                        <PollOption
-                                            {...this.props}
-                                            key={index}
-                                            index={value}
-                                            up={
-                                                index
-                                                    ? () => {
-                                                        const previousValue =
-                                                          arr[index - 1];
-                                                        runSnackbar(
-                                                            true,
-                                                            'Updating your vote...',
-                                                            0
-                                                        );
-                                                        this.props.poll
-                                                            .voteOptions({
-                                                                [this.props
-                                                                    .options[
-                                                                        previousValue
-                                                                    ].id]: index + 1,
-                                                                [this.props
-                                                                    .options[
-                                                                        value
-                                                                    ].id]: index
-                                                            })
-                                                            .then(
-                                                                () => {
-                                                                    runSnackbar(
-                                                                        true,
-                                                                        'Your vote has been updated.'
-                                                                    );
-                                                                    this.props.itemRefresher();
-                                                                },
-                                                                (error) => {
-                                                                    runSnackbar(
-                                                                        true,
-                                                                        error.message
-                                                                    );
-                                                                }
-                                                            );
-                                                    }
-                                                    : () => {}
-                                            }
-                                        />
-                                    )
-                                )
-                            )
-                            : (
                                 <ListItem disabled>
-                                    <ListItemText>
-                                    Please join the poll to see and vote the
-                                    options.
-                                    </ListItemText>
+                                    <ListItemText secondary="Please join the poll to see and vote the options." />
                                 </ListItem>
-                            )}
+                            )
+                            : listItems.length
+                                ? (
+                                    listItems
+                                )
+                                : (
+                                    <ListItem disabled>
+                                        <ListItemText secondary="No options found." />
+                                    </ListItem>
+                                )}
                     </List>
                 </Paper>
             </MyContainer>

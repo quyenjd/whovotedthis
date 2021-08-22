@@ -1,12 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import {
-    cloneDeep,
-    isArray,
-    isPlainObject,
-    isSafeInteger,
-    isString,
-    reduce
-} from 'lodash';
+import { cloneDeep, isArray, isPlainObject, isString, reduce } from 'lodash';
 import Profile from './Profile';
 
 export type PollStage = 'open' | 'voting' | 'closed';
@@ -171,6 +164,7 @@ export default class Poll {
     private title = '';
     private stage: PollStage = 'open';
     private options: PollOption[] = [];
+    private limit = 0;
 
     private _id = '';
     private _version = 0;
@@ -187,6 +181,7 @@ export default class Poll {
             this.title = data.title;
             this.stage = data.stage;
             this.options = data.options;
+            this.limit = parseInt(data.limit) || 0;
         };
 
         this.axios = axios
@@ -226,6 +221,27 @@ export default class Poll {
         return this.axios;
     }
 
+    public getLimit() {
+        return this.axios.then(() => {
+            return this.limit;
+        });
+    }
+
+    public setLimit(newLimit: number) {
+        return Profile.require('poll:limit')
+            ? this.axios.then(() => {
+                if (this.stage === 'open') {
+                    this.limit = newLimit;
+                    return this.save();
+                } else {
+                    throw new Error(
+                        'This operation is only allowed on Open polls'
+                    );
+                }
+            })
+            : Promise.resolve();
+    }
+
     public getTitle() {
         return this.axios.then(() => {
             return this.title;
@@ -235,8 +251,14 @@ export default class Poll {
     public updateTitle(newTitle: string) {
         return Profile.require('poll:update')
             ? this.axios.then(() => {
-                this.title = newTitle || 'New Poll';
-                return this.save();
+                if (this.stage !== 'closed') {
+                    this.title = newTitle || 'New Poll';
+                    return this.save();
+                } else {
+                    throw new Error(
+                        'This operation is not allowed on Closed polls'
+                    );
+                }
             })
             : Promise.resolve();
     }
@@ -254,10 +276,16 @@ export default class Poll {
                 if (
                     newStage === 'open' &&
                       (this.stage === 'voting' || this.stage === 'closed')
-                ) { return Promise.resolve(); }
-                if (newStage === 'voting' && this.stage === 'closed') { return Promise.resolve(); }
+                ) {
+                    return Promise.resolve();
+                }
+                if (newStage === 'voting' && this.stage === 'closed') {
+                    return Promise.resolve();
+                }
 
-                if (newStage === 'voting' && !this.options.length) { throw new Error('Cannot start voting on an empty poll'); }
+                if (newStage === 'voting' && !this.options.length) {
+                    throw new Error('Cannot start voting on an empty poll');
+                }
 
                 // Calculate the result if the poll is switched to Closed
                 if (newStage === 'closed') {
@@ -280,19 +308,38 @@ export default class Poll {
     }
 
     public addOption(value = '') {
-        const username =
-            this.stage === 'open' ? Profile.require('poll:option:add') : false;
+        const username = Profile.require('poll:option:add');
         return username
             ? this.axios
                 .then(() => {
-                    this.options.push({
-                        id: `${Poll.optionIdCounter++}`,
-                        value: value || 'New Option',
-                        user: username,
-                        result: 0,
-                        votes: {}
-                    });
-                    return this.save();
+                    if (this.stage === 'open') {
+                        if (
+                            this.limit &&
+                              reduce(
+                                  this.options,
+                                  (count, option) =>
+                                      count + +(option.user === username),
+                                  0
+                              ) >= this.limit
+                        ) {
+                            throw new Error(
+                                'You have reached the limit of options'
+                            );
+                        }
+
+                        this.options.push({
+                            id: `${Poll.optionIdCounter++}`,
+                            value: value || 'New Option',
+                            user: username,
+                            result: 0,
+                            votes: {}
+                        });
+                        return this.save();
+                    } else {
+                        throw new Error(
+                            'This operation is only allowed on Open polls'
+                        );
+                    }
                 })
                 .then(() => Poll.save())
             : Promise.resolve();
@@ -311,7 +358,9 @@ export default class Poll {
                                 : true;
                     })
                     .map((option) => {
-                        for (const user in option.votes) { if (user !== username) delete option.votes[user]; }
+                        for (const user in option.votes) {
+                            if (user !== username) delete option.votes[user];
+                        }
                         return option;
                     });
             })
@@ -319,95 +368,126 @@ export default class Poll {
     }
 
     public getInfo() {
-        return Profile.require('poll:viewinfo')
-            ? this.axios.then(() => {
-                const dict = {} as Record<string, boolean>;
-                this.options.forEach((option) => {
-                    dict[option.user] = true;
-                });
+        return (
+            Profile.require('poll:viewinfo')
+                ? this.axios.then(() => {
+                    const dict = {} as Record<string, boolean>;
+                    this.options.forEach((option) => {
+                        dict[option.user] = true;
+                    });
 
-                const numVoters = Object.keys(dict).length;
-                const numOptions = this.options.length;
-                return `${numVoters} voter${
-                    numVoters > 1 ? 's' : ''
-                } joined, ${numOptions} option${
-                    numOptions > 1 ? 's' : ''
-                } added.`;
-            })
-            : Promise.resolve('');
+                    const numVoters = Object.keys(dict).length;
+                    const numOptions = this.options.length;
+                    return `${numVoters} voter${
+                        numVoters > 1 ? 's' : ''
+                    } joined, ${numOptions} option${
+                        numOptions > 1 ? 's' : ''
+                    } added.`;
+                })
+                : Promise.resolve('')
+        ).then((info) =>
+            this.getLimit().then(
+                (limit) =>
+                    `${info}${info.length ? '\n' : ''}${
+                        limit
+                            ? `This poll is limited to a maximum of ${limit} option${
+                                limit > 1 ? 's' : ''
+                            } per user.`
+                            : ''
+                    }`
+            )
+        );
     }
 
     public updateOption(id: string, newValue: string) {
-        const username =
-            this.stage === 'open' ? Profile.require('poll:option:edit') : false;
+        const username = Profile.require('poll:option:edit');
         return username
             ? this.axios.then(() => {
-                this.options = this.options.map((option) => ({
-                    ...option,
-                    value:
-                          option.id === id
-                              ? newValue || option.value
-                              : option.value
-                }));
-                return this.save();
+                if (this.stage === 'open') {
+                    this.options = this.options.map((option) => ({
+                        ...option,
+                        value:
+                              option.id === id
+                                  ? newValue || option.value
+                                  : option.value
+                    }));
+                    return this.save();
+                } else {
+                    throw new Error(
+                        'This operation is only allowed on Open polls'
+                    );
+                }
             })
             : Promise.resolve();
     }
 
     public removeOption(id: string) {
-        const username =
-            this.stage === 'open'
-                ? Profile.require('poll:option:remove')
-                : false;
+        const username = Profile.require('poll:option:remove');
         return username
             ? this.axios.then(() => {
-                this.options = this.options.filter(
-                    (option) =>
-                        !(option.id === id && option.user === username)
-                );
-                return this.save();
+                if (this.stage === 'open') {
+                    this.options = this.options.filter(
+                        (option) =>
+                            !(option.id === id && option.user === username)
+                    );
+                    return this.save();
+                } else {
+                    throw new Error(
+                        'This operation is only allowed on Open polls'
+                    );
+                }
             })
             : Promise.resolve();
     }
 
     public voteOptions(rates: { [id: string]: number }) {
-        const username =
-            this.stage === 'voting' ? Profile.require('poll:vote') : false;
+        const username = Profile.require('poll:vote');
         return username
             ? this.axios.then(() => {
-                this.options = this.options.map((option) => {
-                    return Object.prototype.hasOwnProperty.call(
-                        rates,
-                        option.id
-                    ) && option.user !== username
-                        ? {
-                            ...option,
-                            votes: {
-                                ...option.votes,
-                                [username]: rates[option.id]
+                if (this.stage === 'voting') {
+                    this.options = this.options.map((option) => {
+                        return Object.prototype.hasOwnProperty.call(
+                            rates,
+                            option.id
+                        ) && option.user !== username
+                            ? {
+                                ...option,
+                                votes: {
+                                    ...option.votes,
+                                    [username]: rates[option.id]
+                                }
                             }
-                        }
-                        : option;
-                });
-                return this.save();
+                            : option;
+                    });
+                    return this.save();
+                } else {
+                    throw new Error(
+                        'This operation is only allowed on Voting polls'
+                    );
+                }
             })
             : Promise.resolve();
     }
 
     public remove() {
         return Profile.require('poll:remove')
-            ? this.getStage().then((stage) => {
-                if (stage === 'closed') return Promise.resolve();
-                return axios
-                    .request({
-                        url: `/~/build/open/POLLS_${this.pollId}`,
-                        method: 'DELETE',
-                        data: { id: this._id }
-                    })
-                    .then(() => {
-                        delete Poll.loaded[this.pollId];
-                        return Poll.save();
-                    });
+            ? this.axios.then(() => {
+                if (this.stage !== 'closed') {
+                    return axios
+                        .request({
+                            url: `/~/build/open/POLLS_${this.pollId}`,
+                            method: 'DELETE',
+                            data: { id: this._id }
+                        })
+                        .then(() => {
+                            delete Poll.loaded[this.pollId];
+                            return Poll.save();
+                        });
+                } else {
+                    throw new Error(
+                        'This operation is not allowed on Closed polls'
+                    );
+                }
             })
             : Promise.resolve();
     }
@@ -442,7 +522,8 @@ export default class Poll {
                         id: this._id,
                         title: this.title,
                         stage: this.stage,
-                        options: this.options
+                        options: this.options,
+                        limit: this.limit
                     }
                 });
             })
@@ -479,6 +560,8 @@ export default class Poll {
                 isString(response.data[0]._id) &&
                 isPlainObject(response.data[0].data)
             )
-        ) { throw new Error('Cannot parse the response from server'); }
+        ) {
+            throw new Error('Cannot parse the response from server');
+        }
     }
 }
