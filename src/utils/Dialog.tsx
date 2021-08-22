@@ -34,7 +34,7 @@ export default class Dialog extends Component<
     constructor(props: Record<never, never>) {
         super(props);
 
-        this.mobx = ConfigPool.requireConsumable<{ state: State }>(
+        this.mobx = ConfigPool.requireConsumable(
             this,
             ['Dialog'],
             ['state'],

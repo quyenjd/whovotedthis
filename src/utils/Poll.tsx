@@ -346,7 +346,9 @@ export default class Poll {
     }
 
     public getOptions() {
-        const username = Profile.require('poll:option:view');
+        const username =
+            Profile.require('poll:option:view') ||
+            (this.stage === 'closed' ? Profile.require('portal') : false);
         return username
             ? this.axios.then(() => {
                 return cloneDeep(this.options)
@@ -371,18 +373,25 @@ export default class Poll {
         return (
             Profile.require('poll:viewinfo')
                 ? this.axios.then(() => {
-                    const dict = {} as Record<string, boolean>;
+                    const added = {} as Record<string, boolean>;
+                    const voted = {} as Record<string, boolean>;
                     this.options.forEach((option) => {
-                        dict[option.user] = true;
+                        added[option.user] = true;
+                        Object.keys(option.votes).forEach((username) => {
+                            voted[username] = true;
+                        });
                     });
 
-                    const numVoters = Object.keys(dict).length;
+                    const numAdded = Object.keys(added).length;
+                    const numJoined = Object.keys(voted).length;
                     const numOptions = this.options.length;
-                    return `${numVoters} voter${
-                        numVoters > 1 ? 's' : ''
-                    } joined, ${numOptions} option${
+                    return `${numAdded} voter${
+                        numAdded > 1 ? 's' : ''
+                    } added ${numOptions} option${
                         numOptions > 1 ? 's' : ''
-                    } added.`;
+                    }. ${numJoined} voter${
+                        numJoined > 1 ? 's have' : ' has'
+                    } joined the voting.`;
                 })
                 : Promise.resolve('')
         ).then((info) =>

@@ -7,13 +7,14 @@ import {
     ListItemText,
     ListSubheader,
     Paper,
-    withStyles
-    , Divider
+    withStyles,
+    Divider
 } from '@material-ui/core';
 import Profile from '../../utils/Profile';
 import { PollOption as Option } from '../../utils/Poll';
 import PollOption from './PollOption';
 import { runSnackbar } from '../../utils/Snackbar';
+import ConfigPool from '../../utils/ConfigPool';
 
 const MyContainer = withStyles((theme) => ({
     root: {
@@ -25,7 +26,10 @@ const MyContainer = withStyles((theme) => ({
 
 export default class PollOptionList extends Component<PollBodyElementProps> {
     render() {
-        if (!Profile.require('poll:option:view')) return <></>;
+        if (
+            this.props.stage !== 'closed' &&
+            !Profile.require('poll:option:view')
+        ) { return <></>; }
 
         const canVote = Profile.require('poll:vote');
 
@@ -49,10 +53,15 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
                     {...this.props}
                     key={index}
                     index={value}
+                    rank={index + 1}
                     up={
                         index
                             ? () => {
                                 const previousValue = arr[index - 1];
+                                ConfigPool.set(
+                                    ['PollOption', 'voting'],
+                                    true
+                                );
                                 runSnackbar(true, 'Updating your vote...', 0);
                                 this.props.poll
                                     .voteOptions({
@@ -71,7 +80,13 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
                                         (error) => {
                                             runSnackbar(true, error.message);
                                         }
-                                    );
+                                    )
+                                    .finally(() => {
+                                        ConfigPool.set(
+                                            ['PollOption', 'voting'],
+                                            false
+                                        );
+                                    });
                             }
                             : () => {}
                     }
@@ -82,8 +97,14 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
         return (
             <MyContainer disableGutters>
                 <Paper variant="outlined">
-                    <List style={{ width: '100%', maxHeight: '240px' }}>
-                        <ListSubheader>
+                    <List
+                        style={{
+                            width: '100%',
+                            maxHeight: '240px',
+                            overflowY: 'auto'
+                        }}
+                    >
+                        <ListSubheader color="primary" disableSticky>
                             {this.props.stage === 'open'
                                 ? 'My options'
                                 : this.props.stage === 'voting'

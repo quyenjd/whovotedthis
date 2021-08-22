@@ -30,6 +30,8 @@ interface TitleProps {
 
 class PortalPollListItemTitle extends Component<TitleProps> {
     render() {
+        const canVote = Profile.require('poll:vote');
+
         return (
             <Typography variant="body1">
                 <MyChip
@@ -47,7 +49,7 @@ class PortalPollListItemTitle extends Component<TitleProps> {
                     }
                 />
                 {this.props.title}
-                {this.props.stage !== 'open'
+                {canVote && this.props.stage !== 'open'
                     ? ' ' + (this.props.voted ? '(joined)' : '(not joined)')
                     : ''}
             </Typography>
@@ -57,30 +59,13 @@ class PortalPollListItemTitle extends Component<TitleProps> {
 
 class PortalPollListItemBody extends Component<PollBodyElementProps> {
     render() {
-        if (this.props.stage === 'open') {
-            return (
-                <div style={{ width: '100%' }}>
-                    <PollInfo {...this.props} />
-                    <PollOptionList {...this.props} />
-                    <PollMenu {...this.props} />
-                </div>
-            );
-        } else if (this.props.stage === 'voting') {
-            return (
-                <div style={{ width: '100%' }}>
-                    <PollInfo {...this.props} />
-                    <PollOptionList {...this.props} />
-                    <PollMenu {...this.props} />
-                </div>
-            );
-        } else {
-            return (
-                <div style={{ width: '100%' }}>
-                    <PollInfo {...this.props} />
-                    <PollOptionList {...this.props} />
-                </div>
-            );
-        }
+        return (
+            <div style={{ width: '100%' }}>
+                <PollInfo {...this.props} />
+                <PollOptionList {...this.props} />
+                <PollMenu {...this.props} />
+            </div>
+        );
     }
 }
 

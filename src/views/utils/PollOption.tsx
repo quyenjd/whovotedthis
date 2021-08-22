@@ -10,13 +10,15 @@ import {
     Menu,
     MenuItem,
     TextField,
-    Tooltip
+    Tooltip,
+    withStyles
 } from '@material-ui/core';
 import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { runDialog } from '../../utils/Dialog';
 import { runSnackbar } from '../../utils/Snackbar';
+import ConfigPool, { Consumable } from '../../utils/ConfigPool';
 
 let newValue = '';
 
@@ -54,7 +56,45 @@ const Form = function ({
 
 interface Props extends PollBodyElementProps {
     index: number;
+    rank: number;
     up: () => void;
+}
+
+class PollOptionUpvote extends Component<Pick<Props, 'up'>> {
+    mobx: Consumable<{ voting: boolean }>;
+
+    constructor(props: Pick<Props, 'up'>) {
+        super(props);
+
+        this.mobx = ConfigPool.requireConsumable(
+            this,
+            ['PollOption'],
+            ['voting'],
+            [false]
+        );
+    }
+
+    render() {
+        const MyTooltip = withStyles((theme) => ({
+            tooltipPlacementTop: {
+                marginBottom: theme.spacing(1)
+            }
+        }))(Tooltip);
+
+        return !this.mobx.state.voting
+            ? (
+                <ListItemSecondaryAction>
+                    <MyTooltip title="Upvote" arrow placement='top'>
+                        <IconButton edge="end" onClick={() => this.props.up()}>
+                            <ArrowUpwardIcon />
+                        </IconButton>
+                    </MyTooltip>
+                </ListItemSecondaryAction>
+            )
+            : (
+                <></>
+            );
+    }
 }
 
 interface State {
@@ -104,8 +144,10 @@ export default class PollOption extends Component<Props, State> {
                     primary={option.value}
                     secondary={
                         this.props.stage === 'closed'
-                            ? `Rate: ${option.result}`
-                            : undefined
+                            ? `Average rank: ${option.result.toFixed(2)}`
+                            : this.props.stage === 'voting'
+                                ? `You're ranking this #${this.props.rank}.`
+                                : undefined
                     }
                 />
                 {this.props.stage === 'open'
@@ -194,18 +236,9 @@ export default class PollOption extends Component<Props, State> {
                             </Menu>
                         </ListItemSecondaryAction>
                     )
-                    : this.props.stage === 'voting' && this.props.index
+                    : this.props.stage === 'voting' && this.props.rank > 1
                         ? (
-                            <ListItemSecondaryAction>
-                                <Tooltip title="Upvote">
-                                    <IconButton
-                                        edge="end"
-                                        onClick={() => this.props.up()}
-                                    >
-                                        <ArrowUpwardIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </ListItemSecondaryAction>
+                            <PollOptionUpvote up={this.props.up} />
                         )
                         : (
                             <></>

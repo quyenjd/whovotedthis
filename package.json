@@ -3,7 +3,7 @@
     "author": "quyenjd",
     "license": "UNLICENSED",
     "description": "Simple anonymous voting system out of the box",
-    "version": "0.0.1-rc.2",
+    "version": "0.0.1-rc.3",
     "private": true,
     "repository": {
         "type": "git",
@@ -11,7 +11,8 @@
     },
     "keywords": [
         "anonymous",
-        "voting"
+        "voting",
+        "poll"
     ],
     "scripts": {
         "start": "react-scripts start",
