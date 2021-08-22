@@ -16,8 +16,8 @@ Check it out live [here](https://icyfiremen86.qoom.space/~/build).
 
 ## Motivation
 
-This project is used as a demonstration in the [PeddieHacks](https://peddiehacks.peddie.org/) hackathon, 2021.
+This project is used as a demonstration in the [PeddieHacks](https://peddiehacks.peddie.org/) hackathon 2021.
 
 ## What I use
 
-React (bootstrapped with Create React App), Material UI, and other awesome libraries, including my utility [ConfigPool][src/utils/ConfigPool.tsx], which is a wrapper of MobX that internally binds to React class components.
+React (bootstrapped with Create React App), Material UI, and other awesome libraries, including my utility [ConfigPool](src/utils/ConfigPool.tsx), which is a wrapper of MobX that internally binds to React class components.
