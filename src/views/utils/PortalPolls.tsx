@@ -9,10 +9,10 @@ import {
     Button
 } from '@material-ui/core';
 import { Component } from 'react';
-import { runSnackbar } from '../utils/Snackbar';
-import Poll, { PollFilter } from '../utils/Poll';
+import { runSnackbar } from '../../utils/Snackbar';
+import Poll, { PollFilter } from '../../utils/Poll';
 import PortalPollList from './PortalPollList';
-import Profile from '../utils/Profile';
+import Profile from '../../utils/Profile';
 
 const MyFormControl = withStyles((theme) => ({
     root: {

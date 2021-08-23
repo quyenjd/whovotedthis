@@ -108,7 +108,7 @@ interface State {
 /**
  * Interface element for each poll option.
  */
-export default class PollOption extends Component<Props, State> {
+export default class PollOptionListItem extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 

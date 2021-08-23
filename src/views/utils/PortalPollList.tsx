@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import Poll, { PollFilter } from '../utils/Poll';
+import Poll, { PollFilter } from '../../utils/Poll';
 import PortalPollListItem from './PortalPollListItem';
-import { runSnackbar } from '../utils/Snackbar';
+import { runSnackbar } from '../../utils/Snackbar';
 import { Typography } from '@material-ui/core';
 
 interface Props {

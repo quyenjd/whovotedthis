@@ -24,7 +24,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 import PollIcon from '@material-ui/icons/Poll';
 import Link from '../utils/Link';
-import PortalPolls from './PortalPolls';
+import PortalPolls from './utils/PortalPolls';
 import { runDialog } from '../utils/Dialog';
 import Profile from '../utils/Profile';
 import { runSnackbar } from '../utils/Snackbar';

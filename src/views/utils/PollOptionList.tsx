@@ -11,8 +11,8 @@ import {
     Divider
 } from '@material-ui/core';
 import Profile from '../../utils/Profile';
-import { PollOption as Option } from '../../utils/Poll';
-import PollOption from './PollOption';
+import { PollOption } from '../../utils/Poll';
+import PollOptionListItem from './PollOptionListItem';
 import { runSnackbar } from '../../utils/Snackbar';
 import ConfigPool from '../../utils/ConfigPool';
 
@@ -27,7 +27,7 @@ const MyContainer = withStyles((theme) => ({
 /**
  * Interface element for a list of poll options.
  *
- * It acts as a wrapper to map PollOption elements and handle upvoting.
+ * It acts as a wrapper to map PollOptionListItem elements and handle upvoting.
  */
 export default class PollOptionList extends Component<PollBodyElementProps> {
     render() {
@@ -40,7 +40,7 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
 
         const canVote = Profile.require('poll:vote');
 
-        const getSorted = (options: Option[]) => {
+        const getSorted = (options: PollOption[]) => {
             const indexes = [];
             for (let i = 0; i < options.length; ++i) indexes.push(i);
 
@@ -56,7 +56,7 @@ export default class PollOptionList extends Component<PollBodyElementProps> {
 
         const listItems = getSorted(this.props.options).map(
             (value, index, arr) => (
-                <PollOption
+                <PollOptionListItem
                     {...this.props}
                     key={index}
                     index={value}

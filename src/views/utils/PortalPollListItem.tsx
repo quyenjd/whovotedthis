@@ -8,12 +8,12 @@ import {
     withStyles
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Poll, { PollOption, PollStage } from '../utils/Poll';
-import PollBodyElementProps from './utils/PollBodyElementProps';
-import PollInfo from './utils/PollInfo';
-import PollMenu from './utils/PollMenu';
-import PollOptionList from './utils/PollOptionList';
-import Profile from '../utils/Profile';
+import Poll, { PollOption, PollStage } from '../../utils/Poll';
+import PollBodyElementProps from './PollBodyElementProps';
+import PollInfo from './PollInfo';
+import PollMenu from './PollMenu';
+import PollOptionList from './PollOptionList';
+import Profile from '../../utils/Profile';
 
 const MyChip = withStyles((theme) => ({
     root: {
