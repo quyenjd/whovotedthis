@@ -41,4 +41,4 @@ await fetch('/~/YOUR_PROJECT_NAME/signup', {
 });
 ```
 
-Also when building the project, make sure the `homepage` key in your `package.json` points correctly to your Qoom space.
+Also before building the project, make sure to modify `homepage` in `package.json` to point correctly to your Qoom space. A Qoom project file `project.json` will be automatically generated for you, so simply change the name of the `build` folder if you want a different project name, then upload.
